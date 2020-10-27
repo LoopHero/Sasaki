@@ -19,7 +19,10 @@ from telethon.errors.rpcerrorlist import YouBlockedUserError
 
 from userbot.telebotConfig import Var
 from userbot.utils import admin_cmd, sudo_cmd
+from telegraph import Telegraph, exceptions, upload_file
 
+telegraph = Telegraph()
+mee = telegraph.create_account(short_name="telebot")
 
 @telebot.on(admin_cmd(pattern="purl ?(.*)"))
 @telebot.on(sudo_cmd(pattern="purl ?(.*)", allow_sudo=True))
@@ -260,3 +263,31 @@ async def tel(event):
     tap = await bot.inline_query(botusername, tele)
     await tap[0].click(event.chat_id)
     await event.delete()
+
+@telebot.on(admin_cmd(pattern="font ?(.*)"))
+@telebot.on(sudo_cmd(pattern="font ?(.*)", allow_sudo=True))
+async def _(event):
+    bot = "@fontsgenbot"
+    if event.fwd_from:
+        return
+    sysarg = event.pattern_match.group(1)
+    if sysarg == "":
+        await event.edit("Give me a text to sylize pero")
+    else:
+        async with borg.conversation(bot) as conv:
+            try:
+                x = await eor(event, "`Making the text stylish..`")
+                await conv.send_message("/start")
+                await conv.get_response()
+                await conv.send_message(sysarg)
+                audio = await conv.get_response()
+                title = "Stylish Fonts"
+                topaste = audio.text
+                topaste = topaste.replace("\n", "<br>")
+                response = telegraph.create_page(title, html_content=topaste)
+                link = response["path"]
+                await x.edit(f"**Normal Text** - {sysarg}\n**Stylised text** - [here](https://telegra.ph/{link})", link_preview=False)
+            except YouBlockedUserError:
+                await x.edit("**Error:** `unblock` @fontsgenbot `and retry!")
+   
+    
