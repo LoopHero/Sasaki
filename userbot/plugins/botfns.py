@@ -14,15 +14,16 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from telegraph import Telegraph
 from telethon import events
 from telethon.errors.rpcerrorlist import YouBlockedUserError
 
 from userbot.telebotConfig import Var
 from userbot.utils import admin_cmd, sudo_cmd
-from telegraph import Telegraph, exceptions, upload_file
 
 telegraph = Telegraph()
 mee = telegraph.create_account(short_name="telebot")
+
 
 @telebot.on(admin_cmd(pattern="purl ?(.*)"))
 @telebot.on(sudo_cmd(pattern="purl ?(.*)", allow_sudo=True))
@@ -264,6 +265,7 @@ async def tel(event):
     await tap[0].click(event.chat_id)
     await event.delete()
 
+
 @telebot.on(admin_cmd(pattern="font ?(.*)"))
 @telebot.on(sudo_cmd(pattern="font ?(.*)", allow_sudo=True))
 async def _(event):
@@ -286,8 +288,9 @@ async def _(event):
                 topaste = topaste.replace("\n", "<br>")
                 response = telegraph.create_page(title, html_content=topaste)
                 link = response["path"]
-                await x.edit(f"**Normal Text** - {sysarg}\n**Stylised text** - [here](https://telegra.ph/{link})", link_preview=False)
+                await x.edit(
+                    f"**Normal Text** - {sysarg}\n**Stylised text** - [here](https://telegra.ph/{link})",
+                    link_preview=False,
+                )
             except YouBlockedUserError:
                 await x.edit("**Error:** `unblock` @fontsgenbot `and retry!")
-   
-    
